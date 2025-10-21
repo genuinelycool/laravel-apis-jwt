@@ -25,8 +25,26 @@ class ApiController extends Controller
     }
 
     // Login API [email, password]
-    public function login() {
+    public function login(Request $request) {
+        $data = $request->validate([
+            "email" => "required|email",
+            "password" => "required"
+        ]);
 
+        $token = auth()->attempt($data);
+
+        if ($token) {
+            return response()->json([
+                "status" => true,
+                "message" => "User logged in",
+                "token" => $token
+            ]);
+        } else {
+            return response()->json([
+                "status" => false,
+                "message" => "Invalid credentials"
+            ]);
+        }
     }
 
     // Profile API
