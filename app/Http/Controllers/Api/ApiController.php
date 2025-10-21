@@ -9,8 +9,19 @@ use App\Models\User;
 class ApiController extends Controller
 {
     // Register API [name, email, password, password_confirmation]
-    public function register() {
+    public function register(Request $request) {
+        $data = $request->validate([
+            "name" => "required|string",
+            "email" => "required|email|unique:users,email",
+            "password" => "required|confirmed"
+        ]);
 
+        User::create($data);
+
+        return response()->json([
+            "status" => "success",
+            "message" => "User registered successfully"
+        ]);
     }
 
     // Login API [email, password]
